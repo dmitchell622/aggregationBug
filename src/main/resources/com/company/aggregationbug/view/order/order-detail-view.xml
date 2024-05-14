@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://orderDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="orderDc"
+                  class="com.company.aggregationbug.entity.Order">
+            <fetchPlan extends="_base">
+                <property name="lineItems" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+            <collection id="lineItemsDc" property="lineItems"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="orderDc">
+            <textField id="orderNumberField" property="orderNumber"/>
+        </formLayout>
+        <h4 text="Line Items"/>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button action="lineItemsDataGrid.create"/>
+            <button action="lineItemsDataGrid.edit"/>
+            <button action="lineItemsDataGrid.remove"/>
+        </hbox>
+        <dataGrid id="lineItemsDataGrid" dataContainer="lineItemsDc" width="100%" minHeight="20em" aggregatable="true">
+            <actions>
+                <action id="create" type="list_create">
+                    <properties>
+                        <property name="openMode" value="DIALOG"/>
+                    </properties>
+                </action>
+                <action id="edit" type="list_edit">
+                    <properties>
+                        <property name="openMode" value="DIALOG"/>
+                    </properties>
+                </action>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns>
+                <column property="description"/>
+                <column property="amount">
+                    <aggregation type="SUM"/>
+                </column>
+            </columns>
+        </dataGrid>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>
